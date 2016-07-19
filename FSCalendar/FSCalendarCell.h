@@ -63,4 +63,9 @@
 - (UIColor *)colorForCurrentStateInDictionary:(NSDictionary *)dictionary;
 - (void)performSelecting;
 
+-(CGFloat) label_ratio;
+-(CGFloat) event_delta;
+- (void) setEventIndicator;
+- (void) relayout;
+
 @end

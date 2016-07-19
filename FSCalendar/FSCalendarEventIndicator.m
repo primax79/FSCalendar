@@ -15,9 +15,6 @@
 
 @property (weak, nonatomic) UIView *contentView;
 
-@property (strong, nonatomic) NSMutableArray *eventLayers;
-@property (assign, nonatomic) BOOL needsInvalidatingColor;
-
 @end
 
 @implementation FSCalendarEventIndicator

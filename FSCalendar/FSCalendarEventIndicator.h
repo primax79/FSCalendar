@@ -14,4 +14,8 @@
 @property (strong, nonatomic) id color;
 @property (assign, nonatomic) BOOL needsAdjustingViewFrame;
 
+@property (strong, nonatomic) NSMutableArray *eventLayers;
+@property (assign, nonatomic) BOOL needsInvalidatingColor;
+
+
 @end

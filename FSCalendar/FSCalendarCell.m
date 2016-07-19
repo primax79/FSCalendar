@@ -36,7 +36,6 @@
         UILabel *label;
         CAShapeLayer *shapeLayer;
         UIImageView *imageView;
-        FSCalendarEventIndicator *eventIndicator;
         
         label = [[UILabel alloc] initWithFrame:CGRectZero];
         label.textAlignment = NSTextAlignmentCenter;
@@ -56,11 +55,7 @@
         [self.contentView.layer insertSublayer:shapeLayer below:_titleLabel.layer];
         self.shapeLayer = shapeLayer;
         
-        eventIndicator = [[FSCalendarEventIndicator alloc] initWithFrame:CGRectZero];
-        eventIndicator.backgroundColor = [UIColor clearColor];
-        eventIndicator.hidden = YES;
-        [self.contentView addSubview:eventIndicator];
-        self.eventIndicator = eventIndicator;
+        [self setEventIndicator];
         
         imageView = [[UIImageView alloc] initWithFrame:CGRectZero];
         imageView.contentMode = UIViewContentModeBottom|UIViewContentModeCenter;
@@ -74,11 +69,29 @@
     return self;
 }
 
+- (void) setEventIndicator {
+    FSCalendarEventIndicator *eventIndicator;
+    eventIndicator = [[FSCalendarEventIndicator alloc] initWithFrame:CGRectZero];
+    eventIndicator.backgroundColor = [UIColor clearColor];
+    eventIndicator.hidden = YES;
+    [self.contentView addSubview:eventIndicator];
+    self.eventIndicator = eventIndicator;
+}
+
+-(CGFloat)label_ratio {
+    return 5.0/6.0;
+}
+
+-(CGFloat)event_ratio {
+    return 0.83;
+}
+
+
 - (void)setBounds:(CGRect)bounds
 {
     [super setBounds:bounds];
-    CGFloat titleHeight = self.bounds.size.height*5.0/6.0;
-    CGFloat diameter = MIN(self.bounds.size.height*5.0/6.0,self.bounds.size.width);
+    CGFloat titleHeight = self.bounds.size.height*self.label_ratio;
+    CGFloat diameter = MIN(self.bounds.size.height*self.label_ratio,self.bounds.size.width);
     diameter = diameter > FSCalendarStandardCellDiameter ? (diameter - (diameter-FSCalendarStandardCellDiameter)*0.5) : diameter;
     _shapeLayer.frame = CGRectMake((self.bounds.size.width-diameter)/2,
                                    (titleHeight-diameter)/2,
@@ -87,8 +100,8 @@
     _shapeLayer.borderWidth = 1.0;
     _shapeLayer.borderColor = [UIColor clearColor].CGColor;
     
-    CGFloat eventSize = _shapeLayer.frame.size.height/6.0;
-    _eventIndicator.frame = CGRectMake(0, CGRectGetMaxY(_shapeLayer.frame)+eventSize*0.17, bounds.size.width, eventSize*0.83);
+    CGFloat eventSize = _shapeLayer.frame.size.height* (1-self.label_ratio);
+    _eventIndicator.frame = CGRectMake(0, CGRectGetMaxY(_shapeLayer.frame)+eventSize*(1-self.event_ratio), bounds.size.width, eventSize*self.event_ratio);
     _imageView.frame = self.contentView.bounds;
 }
 
@@ -165,7 +178,7 @@
     
     if (self.contentView.hidden) return;
     
-    _titleLabel.text = self.title ?: [NSString stringWithFormat:@"%@",@([_calendar dayOfDate:_date])];
+    _titleLabel.text = self.title ? :[NSString stringWithFormat:@"%@",@([_calendar dayOfDate:_date])];
     if (_subtitle) {
         _subtitleLabel.text = _subtitle;
         if (_subtitleLabel.hidden) {
@@ -185,7 +198,7 @@
             
             CGFloat height = titleHeight + subtitleHeight;
             _titleLabel.frame = CGRectMake(0,
-                                           (self.contentView.fs_height*5.0/6.0-height)*0.5+_appearance.titleVerticalOffset,
+                                           (self.contentView.fs_height*self.label_ratio-height)*0.5+_appearance.titleVerticalOffset,
                                            self.fs_width,
                                            titleHeight);
             
@@ -194,7 +207,7 @@
                                               self.fs_width,
                                               subtitleHeight);
         } else {
-            _titleLabel.frame = CGRectMake(0, _appearance.titleVerticalOffset, self.contentView.fs_width, floor(self.contentView.fs_height*5.0/6.0));
+            _titleLabel.frame = CGRectMake(0, _appearance.titleVerticalOffset, self.contentView.fs_width, floor(self.contentView.fs_height*self.label_ratio));
         }
         
         _imageView.center = CGPointMake(self.contentView.fs_width/2.0, _imageView.center.y);
@@ -249,7 +262,7 @@
         _eventIndicator.hidden = !_numberOfEvents;
     }
     _eventIndicator.numberOfEvents = self.numberOfEvents;
-    _eventIndicator.color = self.preferredEventColor ?: _appearance.eventColor;
+    _eventIndicator.color = self.preferredEventColor ? : _appearance.eventColor;
 }
 
 - (BOOL)isWeekend
@@ -261,7 +274,7 @@
 {
     if (self.isSelected || self.dateIsSelected) {
         if (self.dateIsToday) {
-            return dictionary[@(FSCalendarCellStateSelected|FSCalendarCellStateToday)] ?: dictionary[@(FSCalendarCellStateSelected)];
+            return dictionary[@(FSCalendarCellStateSelected|FSCalendarCellStateToday)] ? : dictionary[@(FSCalendarCellStateSelected)];
         }
         return dictionary[@(FSCalendarCellStateSelected)];
     }
@@ -309,7 +322,7 @@
 
 - (void)invalidateEventColors
 {
-    _eventIndicator.color = self.preferredEventColor ?: _appearance.eventColor;
+    _eventIndicator.color = self.preferredEventColor ? : _appearance.eventColor;
 }
 
 - (void)invalidateCellShapes
@@ -331,38 +344,38 @@
 - (UIColor *)colorForCellFill
 {
     if (self.dateIsSelected || self.isSelected) {
-        return self.preferredFillSelectionColor ?: [self colorForCurrentStateInDictionary:_appearance.backgroundColors];
+        return self.preferredFillSelectionColor ? :[self colorForCurrentStateInDictionary:_appearance.backgroundColors];
     }
-    return self.preferredFillDefaultColor ?: [self colorForCurrentStateInDictionary:_appearance.backgroundColors];
+    return self.preferredFillDefaultColor ? :[self colorForCurrentStateInDictionary:_appearance.backgroundColors];
 }
 
 - (UIColor *)colorForTitleLabel
 {
     if (self.dateIsSelected || self.isSelected) {
-        return self.preferredTitleSelectionColor ?: [self colorForCurrentStateInDictionary:_appearance.titleColors];
+        return self.preferredTitleSelectionColor ? :[self colorForCurrentStateInDictionary:_appearance.titleColors];
     }
-    return self.preferredTitleDefaultColor ?: [self colorForCurrentStateInDictionary:_appearance.titleColors];
+    return self.preferredTitleDefaultColor ? :[self colorForCurrentStateInDictionary:_appearance.titleColors];
 }
 
 - (UIColor *)colorForSubtitleLabel
 {
     if (self.dateIsSelected || self.isSelected) {
-        return self.preferredSubtitleSelectionColor ?: [self colorForCurrentStateInDictionary:_appearance.subtitleColors];
+        return self.preferredSubtitleSelectionColor ? :[self colorForCurrentStateInDictionary:_appearance.subtitleColors];
     }
-    return self.preferredSubtitleDefaultColor ?: [self colorForCurrentStateInDictionary:_appearance.subtitleColors];
+    return self.preferredSubtitleDefaultColor ? :[self colorForCurrentStateInDictionary:_appearance.subtitleColors];
 }
 
 - (UIColor *)colorForCellBorder
 {
     if (self.dateIsSelected || self.isSelected) {
-        return _preferredBorderSelectionColor ?: _appearance.borderSelectionColor;
+        return _preferredBorderSelectionColor ? : _appearance.borderSelectionColor;
     }
-    return _preferredBorderDefaultColor ?: _appearance.borderDefaultColor;
+    return _preferredBorderDefaultColor ? : _appearance.borderDefaultColor;
 }
 
 - (FSCalendarCellShape)cellShape
 {
-    return _preferredCellShape ?: _appearance.cellShape;
+    return _preferredCellShape ? : _appearance.cellShape;
 }
 
 - (void)setCalendar:(FSCalendar *)calendar
