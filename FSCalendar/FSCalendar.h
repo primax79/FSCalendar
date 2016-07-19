@@ -54,6 +54,8 @@ typedef NS_ENUM(NSUInteger, FSCalendarPlaceholderType) {
 NS_ASSUME_NONNULL_BEGIN
 
 @class FSCalendar;
+@class FSCalendarCell;
+@class FSCalendarCollectionView;
 
 /**
  * FSCalendarDataSource is a source set of FSCalendar. The basic job is to provide event、subtitle and min/max day to display for calendar.
@@ -436,6 +438,12 @@ IB_DESIGNABLE
  * @param date A date is the calendar.
  */
 - (CGPoint)centerForDate:(NSDate *)date;
+
+- (void)reloadDataForCell:(FSCalendarCell *)cell atIndexPath:(NSIndexPath *)indexPath;
+- (void)reloadVisibleCells;
+- (void)initialize;
+
+@property (weak, nonatomic) FSCalendarCollectionView   *collectionView;
 
 @end
 
