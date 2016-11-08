@@ -64,8 +64,9 @@
 - (void)performSelecting;
 
 -(CGFloat) label_ratio;
--(CGFloat) event_delta;
+-(CGFloat) event_ratio;
 - (void) setEventIndicator;
 - (void) relayout;
+- (void)initialize;
 
 @end

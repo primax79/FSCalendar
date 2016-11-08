@@ -30,43 +30,45 @@
 {
     self = [super initWithFrame:frame];
     if (self) {
-        
-        _needsAdjustingViewFrame = YES;
-        
-        UILabel *label;
-        CAShapeLayer *shapeLayer;
-        UIImageView *imageView;
-        
-        label = [[UILabel alloc] initWithFrame:CGRectZero];
-        label.textAlignment = NSTextAlignmentCenter;
-        label.textColor = [UIColor blackColor];
-        [self.contentView addSubview:label];
-        self.titleLabel = label;
-        
-        label = [[UILabel alloc] initWithFrame:CGRectZero];
-        label.textAlignment = NSTextAlignmentCenter;
-        label.textColor = [UIColor lightGrayColor];
-        [self.contentView addSubview:label];
-        self.subtitleLabel = label;
-        
-        shapeLayer = [CAShapeLayer layer];
-        shapeLayer.backgroundColor = [UIColor clearColor].CGColor;
-        shapeLayer.hidden = YES;
-        [self.contentView.layer insertSublayer:shapeLayer below:_titleLabel.layer];
-        self.shapeLayer = shapeLayer;
-        
-        [self setEventIndicator];
-        
-        imageView = [[UIImageView alloc] initWithFrame:CGRectZero];
-        imageView.contentMode = UIViewContentModeBottom|UIViewContentModeCenter;
-        [self.contentView addSubview:imageView];
-        self.imageView = imageView;
-        
-        self.clipsToBounds = NO;
-        self.contentView.clipsToBounds = NO;
-        
+        [self initialize];
     }
     return self;
+}
+
+- (void)initialize{
+    _needsAdjustingViewFrame = YES;
+
+    UILabel *label;
+    CAShapeLayer *shapeLayer;
+    UIImageView *imageView;
+
+    label = [[UILabel alloc] initWithFrame:CGRectZero];
+    label.textAlignment = NSTextAlignmentCenter;
+    label.textColor = [UIColor blackColor];
+    [self.contentView addSubview:label];
+    self.titleLabel = label;
+
+    label = [[UILabel alloc] initWithFrame:CGRectZero];
+    label.textAlignment = NSTextAlignmentCenter;
+    label.textColor = [UIColor lightGrayColor];
+    [self.contentView addSubview:label];
+    self.subtitleLabel = label;
+
+    shapeLayer = [CAShapeLayer layer];
+    shapeLayer.backgroundColor = [UIColor clearColor].CGColor;
+    shapeLayer.hidden = YES;
+    [self.contentView.layer insertSublayer:shapeLayer below:_titleLabel.layer];
+    self.shapeLayer = shapeLayer;
+
+    [self setEventIndicator];
+
+    imageView = [[UIImageView alloc] initWithFrame:CGRectZero];
+    imageView.contentMode = UIViewContentModeBottom|UIViewContentModeCenter;
+    [self.contentView addSubview:imageView];
+    self.imageView = imageView;
+
+    self.clipsToBounds = NO;
+    self.contentView.clipsToBounds = NO;
 }
 
 - (void) setEventIndicator {
