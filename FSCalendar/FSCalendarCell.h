@@ -90,10 +90,15 @@ typedef NS_ENUM(NSUInteger, FSCalendarMonthPosition);
 - (UIColor *)colorForCurrentStateInDictionary:(NSDictionary *)dictionary;
 - (void)performSelecting;
 
+-(CGFloat) label_ratio;
+-(CGFloat) event_delta;
+- (void) setEventIndicator;
+
 @end
 
 @interface FSCalendarEventIndicator : UIView
 
+@property (strong, nonatomic) NSPointerArray *eventLayers;
 @property (assign, nonatomic) NSInteger numberOfEvents;
 @property (strong, nonatomic) id color;
 

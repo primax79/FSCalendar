@@ -50,7 +50,6 @@
     UILabel *label;
     CAShapeLayer *shapeLayer;
     UIImageView *imageView;
-    FSCalendarEventIndicator *eventIndicator;
     
     label = [[UILabel alloc] initWithFrame:CGRectZero];
     label.textAlignment = NSTextAlignmentCenter;
@@ -72,11 +71,7 @@
     [self.contentView.layer insertSublayer:shapeLayer below:_titleLabel.layer];
     self.shapeLayer = shapeLayer;
     
-    eventIndicator = [[FSCalendarEventIndicator alloc] initWithFrame:CGRectZero];
-    eventIndicator.backgroundColor = [UIColor clearColor];
-    eventIndicator.hidden = YES;
-    [self.contentView addSubview:eventIndicator];
-    self.eventIndicator = eventIndicator;
+    [self setEventIndicator];
     
     imageView = [[UIImageView alloc] initWithFrame:CGRectZero];
     imageView.contentMode = UIViewContentModeBottom|UIViewContentModeCenter;
@@ -86,6 +81,23 @@
     self.clipsToBounds = NO;
     self.contentView.clipsToBounds = NO;
     
+}
+
+-(void) setEventIndicator{
+    FSCalendarEventIndicator *eventIndicator;
+    eventIndicator = [[FSCalendarEventIndicator alloc] initWithFrame:CGRectZero];
+    eventIndicator.backgroundColor = [UIColor clearColor];
+    eventIndicator.hidden = YES;
+    [self.contentView addSubview:eventIndicator];
+    self.eventIndicator = eventIndicator;
+}
+
+-(CGFloat)label_ratio {
+    return 5.0/6.0;
+}
+
+-(CGFloat)event_ratio {
+    return 0.83;
 }
 
 - (void)layoutSubviews
@@ -110,7 +122,7 @@
         CGFloat height = titleHeight + subtitleHeight;
         _titleLabel.frame = CGRectMake(
                                        self.preferredTitleOffset.x,
-                                       (self.contentView.fs_height*5.0/6.0-height)*0.5+self.preferredTitleOffset.y,
+                                       (self.contentView.fs_height*self.label_ratio-height)*0.5+self.preferredTitleOffset.y,
                                        self.contentView.fs_width,
                                        titleHeight
                                        );
@@ -125,14 +137,14 @@
                                        self.preferredTitleOffset.x,
                                        self.preferredTitleOffset.y,
                                        self.contentView.fs_width,
-                                       floor(self.contentView.fs_height*5.0/6.0)
+                                       floor(self.contentView.fs_height*self.label_ratio)
                                        );
     }
     
     _imageView.frame = CGRectMake(self.preferredImageOffset.x, self.preferredImageOffset.y, self.contentView.fs_width, self.contentView.fs_height);
     
-    CGFloat titleHeight = self.bounds.size.height*5.0/6.0;
-    CGFloat diameter = MIN(self.bounds.size.height*5.0/6.0,self.bounds.size.width);
+    CGFloat titleHeight = self.bounds.size.height*self.label_ratio;
+    CGFloat diameter = MIN(self.bounds.size.height*self.label_ratio,self.bounds.size.width);
     diameter = diameter > FSCalendarStandardCellDiameter ? (diameter - (diameter-FSCalendarStandardCellDiameter)*0.5) : diameter;
     _shapeLayer.frame = CGRectMake((self.bounds.size.width-diameter)/2,
                                    (titleHeight-diameter)/2,
@@ -145,14 +157,14 @@
         _shapeLayer.path = path;
     }
     
-    CGFloat eventSize = _shapeLayer.frame.size.height/6.0;
+    
+    CGFloat eventSize = _shapeLayer.frame.size.height* (1-self.label_ratio);
     _eventIndicator.frame = CGRectMake(
                                        self.preferredEventOffset.x,
-                                       CGRectGetMaxY(_shapeLayer.frame)+eventSize*0.17+self.preferredEventOffset.y,
+                                       CGRectGetMaxY(_shapeLayer.frame)+eventSize*(1-self.event_ratio)+self.preferredEventOffset.y,
                                        self.fs_width,
-                                       eventSize*0.83
-                                      );
-    
+                                       eventSize*self.event_ratio
+                                   );
 }
 
 - (void)prepareForReuse
@@ -376,7 +388,7 @@ OFFSET_PROPERTY(preferredEventOffset, PreferredEventOffset, _appearance.eventOff
 
 @property (weak, nonatomic) UIView *contentView;
 
-@property (strong, nonatomic) NSPointerArray *eventLayers;
+//@property (strong, nonatomic) NSPointerArray *eventLayers;
 
 @end
 

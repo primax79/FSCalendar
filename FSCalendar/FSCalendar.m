@@ -60,7 +60,6 @@ typedef NS_ENUM(NSUInteger, FSCalendarOrientation) {
 @property (weak  , nonatomic) UIView                     *topBorder;
 @property (weak  , nonatomic) UIView                     *bottomBorder;
 @property (weak  , nonatomic) FSCalendarScopeHandle      *scopeHandle;
-@property (weak  , nonatomic) FSCalendarCollectionView   *collectionView;
 @property (weak  , nonatomic) FSCalendarCollectionViewLayout *collectionViewLayout;
 
 @property (strong, nonatomic) FSCalendarTransitionCoordinator *transitionCoordinator;
@@ -114,8 +113,6 @@ typedef NS_ENUM(NSUInteger, FSCalendarOrientation) {
 
 - (void)selectCounterpartDate:(NSDate *)date;
 - (void)deselectCounterpartDate:(NSDate *)date;
-
-- (void)reloadDataForCell:(FSCalendarCell *)cell atIndexPath:(NSIndexPath *)indexPath;
 
 - (void)adjustMonthPosition;
 - (BOOL)requestBoundingDatesIfNecessary;
